@@ -1,73 +1,82 @@
-// Constants
+/*grid constants*/
 const GRID_SIZE = 12;
 
-// Ship placements row, col, orientation hardcoded at thr moment and needs to change
-const SHIPS = [
-    { type: 'carrier', row: 2, col: 1, length: 5, orientation: 'H' },
-    { type: 'battleship', row: 5, col: 7, length: 4, orientation: 'V' },
-    { type: 'cruiser', row: 8, col: 2, length: 3, orientation: 'H' },
-    { type: 'submarine', row: 0, col: 9, length: 3, orientation: 'V' },
-    { type: 'destroyer', row: 10, col: 5, length: 2, orientation: 'H' }
+/* This will be replaced by random placement later*/
+const ships = [
+    { type: 'carrier', startRow: 2, startCol: 1, length: 5, orientation: 'H' },
+    { type: 'battleship', startRow: 5, startCol: 7, length: 4, orientation: 'V' },
+    { type: 'cruiser', startRow: 8, startCol: 2, length: 3, orientation: 'H' },
+    { type: 'submarine', startRow: 0, startCol: 9, length: 3, orientation: 'V' },
+    { type: 'destroyer', startRow: 10, startCol: 5, length: 2, orientation: 'H' }
 ];
 
-// Game state - track hits and misses dynamically
-let hitCount = 0;
-let missCount = 0;
-let gameStartTime = Date.now();
+/*Current game before starting*/
+let totalHits = 0;
+let totalMisses = 0;
+let gameStartTimestamp = null;
 
-// Save match to localStorage (same function used in history.js)
-function saveMatch(match) {
-    const matches = JSON.parse(localStorage.getItem('battleship_matches') || '[]');
-    matches.unshift(match);
-    
-    // Keep only 20 matches
-    if (matches.length > 20) {
-        matches.pop();
-    }
-    
-    localStorage.setItem('battleship_matches', JSON.stringify(matches));
-}
-
-// Create game board
+/*Creating Board */
 function createBoard(boardElement) {
-    for (let row = 0; row < GRID_SIZE; row++) {
-        for (let col = 0; col < GRID_SIZE; col++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
-            tile.dataset.row = row;
-            tile.dataset.col = col;
-            boardElement.appendChild(tile);
+    for (let currentRowIndex = 0; currentRowIndex < GRID_SIZE; currentRowIndex++) {
+        for (let currentColumnIndex = 0; currentColumnIndex < GRID_SIZE; currentColumnIndex++) {
+            const tileElement = document.createElement('div');
+
+            tileElement.className = 'tile';
+            tileElement.dataset.row = currentRowIndex;
+            tileElement.dataset.col = currentColumnIndex;
+
+            boardElement.appendChild(tileElement);
         }
     }
 }
 
-// Get tile at position
-function getTile(board, row, col) {
-    return board.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+/* Tile helpers*/
+function getTileAt(boardElement, rowIndex, columnIndex) {
+    return boardElement.querySelector(
+        `[data-row="${rowIndex}"][data-col="${columnIndex}"]`
+    );
 }
 
-// Place ships on player board
-function placeShips(board) {
-    SHIPS.forEach(ship => {
-        for (let i = 0; i < ship.length; i++) {
-            const row = ship.orientation === 'H' ? ship.row : ship.row + i;
-            const col = ship.orientation === 'H' ? ship.col + i : ship.col;
-            const tile = getTile(board, row, col);
-            if (tile) {
-                tile.classList.add(ship.type);
+/* Ship placement for player board */
+function placeShipsOnBoard(boardElement) {
+    ships.forEach(ship => {
+        for (let shipTileOffset = 0; shipTileOffset < ship.length; shipTileOffset++) {
+            const rowIndex =
+                ship.orientation === 'H'
+                    ? ship.startRow
+                    : ship.startRow + shipTileOffset;
+
+            const columnIndex =
+                ship.orientation === 'H'
+                    ? ship.startCol + shipTileOffset
+                    : ship.startCol;
+
+            const tileElement = getTileAt(boardElement, rowIndex, columnIndex);
+
+            if (tileElement) {
+                tileElement.classList.add(ship.type);
             }
         }
     });
 }
 
-// Check if a position has a ship
-function isShipAt(row, col) {
-    for (let ship of SHIPS) {
-        for (let i = 0; i < ship.length; i++) {
-            const shipRow = ship.orientation === 'H' ? ship.row : ship.row + i;
-            const shipCol = ship.orientation === 'H' ? ship.col + i : ship.col;
-            
-            if (shipRow === row && shipCol === col) {
+/* Logic for the ship placement*/
+function isShipAtPosition(rowIndex, columnIndex) {
+    for (let shipIndex = 0; shipIndex < ships.length; shipIndex++) {
+        const currentShip = ships[shipIndex];
+
+        for (let shipTileOffset = 0; shipTileOffset < currentShip.length; shipTileOffset++) {
+            const shipRow =
+                currentShip.orientation === 'H'
+                    ? currentShip.startRow
+                    : currentShip.startRow + shipTileOffset;
+
+            const shipCol =
+                currentShip.orientation === 'H'
+                    ? currentShip.startCol + shipTileOffset
+                    : currentShip.startCol;
+
+            if (shipRow === rowIndex && shipCol === columnIndex) {
                 return true;
             }
         }
@@ -75,90 +84,97 @@ function isShipAt(row, col) {
     return false;
 }
 
-// Update stats display
-function updateStats() {
-    document.getElementById('hits').textContent = hitCount;
-    document.getElementById('misses').textContent = missCount;
-    
-    const totalShots = hitCount + missCount;
-    const accuracy = totalShots > 0 ? ((hitCount / totalShots) * 100).toFixed(1) : 0;
-    document.getElementById('accuracy').textContent = accuracy + '%';
+/*Stats displaying */
+function updateStatsDisplay() {
+    document.getElementById('hits').textContent = totalHits;
+    document.getElementById('misses').textContent = totalMisses;
+
+    const totalShots = totalHits + totalMisses;
+    const accuracyPercentage =
+        totalShots === 0 ? 0 : ((totalHits / totalShots) * 100).toFixed(1);
+
+    document.getElementById('accuracy').textContent = accuracyPercentage + '%';
 }
 
-// Check if all ships are sunk
-function checkWinCondition() {
-    const totalShipTiles = SHIPS.reduce((sum, ship) => sum + ship.length, 0);
-    
-    if (hitCount === totalShipTiles) {
-        const gameDuration = Math.floor((Date.now() - gameStartTime) / 1000);
-        const minutes = Math.floor(gameDuration / 60);
-        const seconds = gameDuration % 60;
-        const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        
-        const totalShots = hitCount + missCount;
-        const accuracy = ((hitCount / totalShots) * 100).toFixed(1);
-        
-        // Save match to history
-        saveMatch({
-            result: 'win',
-            shots: totalShots,
-            hits: hitCount,
-            accuracy: accuracy,
-            duration: timeString,
-            shipsSunk: '5/5',
-            date: new Date().toISOString()
-        });
-        
-        setTimeout(() => {
-            alert(`🎉 VICTORY! All enemy ships destroyed!\n\nStats:\nShots: ${totalShots}\nHits: ${hitCount}\nAccuracy: ${accuracy}%\nTime: ${timeString}`);
-        }, 500);
-    }
-}
-
-// Handle tile click on firing board
-function handleTileClick(event) {
-    const tile = event.target;
-    
-    // Prevent clicking the same tile twice
-    if (tile.classList.contains('hit') || tile.classList.contains('miss')) {
+/*Logic for Firing */
+function fireAtTile(tileElement) {
+    if (
+        tileElement.classList.contains('hit') ||
+        tileElement.classList.contains('miss')
+    ) {
         return;
     }
-    
-    const row = parseInt(tile.dataset.row);
-    const col = parseInt(tile.dataset.col);
-    
-    // Check if there's a ship at this position
-    if (isShipAt(row, col)) {
-        tile.classList.add('hit');
-        hitCount++;
-        checkWinCondition();
+
+    const rowIndex = Number(tileElement.dataset.row);
+    const columnIndex = Number(tileElement.dataset.col);
+
+    if (isShipAtPosition(rowIndex, columnIndex)) {
+        tileElement.classList.add('hit');
+        totalHits++;
     } else {
-        tile.classList.add('miss');
-        missCount++;
+        tileElement.classList.add('miss');
+        totalMisses++;
     }
-    
-    updateStats();
+
+    updateStatsDisplay();
+    checkWinCondition();
 }
 
-// Initialize game
-function init() {
+/* Randomis firing when clicked */
+function fireRandomShot() {
+    const firingBoard = document.getElementById('firing-board');
+    const allTiles = Array.from(firingBoard.querySelectorAll('.tile'));
+
+    const availableTiles = allTiles.filter(tile =>
+        !tile.classList.contains('hit') &&
+        !tile.classList.contains('miss')
+    );
+
+    if (availableTiles.length === 0) {
+        return;
+    }
+
+    const randomTileIndex = Math.floor(Math.random() * availableTiles.length);
+    fireAtTile(availableTiles[randomTileIndex]);
+}
+
+/* Checking for the win*/
+function checkWinCondition() {
+    const totalShipTiles = ships.reduce(
+        (runningTotal, ship) => runningTotal + ship.length,
+        0
+    );
+
+    if (totalHits === totalShipTiles) {
+        alert('🎉 Victory! All ships destroyed!');
+    }
+}
+
+/* Game starting*/
+function startGame() {
     const playerBoard = document.getElementById('player-board');
     const firingBoard = document.getElementById('firing-board');
 
     createBoard(playerBoard);
     createBoard(firingBoard);
-    
-    placeShips(playerBoard);
-    
-    // Add click listeners to firing board tiles
+
+    placeShipsOnBoard(playerBoard);
+
     const firingTiles = firingBoard.querySelectorAll('.tile');
     firingTiles.forEach(tile => {
-        tile.addEventListener('click', handleTileClick);
+        tile.addEventListener('click', () => fireAtTile(tile));
     });
-    
-    // Initialize stats display
-    updateStats();
+
+    document
+        .getElementById('fire-random')
+        .addEventListener('click', fireRandomShot);
+
+    totalHits = 0;
+    totalMisses = 0;
+    gameStartTimestamp = Date.now();
+
+    updateStatsDisplay();
 }
 
-// Start game when page loads
-document.addEventListener('DOMContentLoaded', init);
+/* Initiating Game*/
+document.addEventListener('DOMContentLoaded', startGame);
