@@ -172,6 +172,7 @@ h2 {
     font-weight: bold;
 }
 
+/* This would need to be implemented for the history page */
 .history-container {
     background: #314b94;
     padding: 30px;
@@ -258,19 +259,19 @@ h2 {
 
 /* I need to add more response design to cater for mobile */
 @media (max-width: 768px) {
-    /* Enable boards to be stacked vertically if used on mobile*/
+/* Enable boards to be stacked vertically if used on mobile*/
     .boards {
         flex-direction: column;
         align-items: center;
     }
     
-    /* Make boards smaller on mobile */
+/* Make boards smaller on mobile */
     .board {
         width: 340px;
         height: 340px;
     }
     
-    /* Make tiles smaller on mobile */
+/* Make tiles smaller on mobile */
     .tile {
         width: 26px;
         height: 26px;

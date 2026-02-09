@@ -1,7 +1,7 @@
 // Constants
 const GRID_SIZE = 12;
 
-// Ship placements [row, col, orientation]
+// Ship placements row, col, orientation hardcoded at thr moment and needs to change
 const SHIPS = [
     { type: 'carrier', row: 2, col: 1, length: 5, orientation: 'H' },
     { type: 'battleship', row: 5, col: 7, length: 4, orientation: 'V' },
