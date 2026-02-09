@@ -4,6 +4,7 @@
     box-sizing: border-box;
 }
 
+/* Main page background */
 body {
     font-family: Arial, sans-serif;
     background: #1a1a2e;
@@ -11,20 +12,23 @@ body {
     padding: 20px;
 }
 
+/* Top navigation container - uses flexbox for layout */
 nav {
-    background: #16213e;
+    background: #232e4d;
     padding: 15px 30px;
     display: flex;
     justify-content: space-between;
     margin-bottom: 30px;
 }
 
+/* Battleship logo */
 .nav-brand {
     font-size: 24px;
     font-weight: bold;
     color: #00d4ff;
 }
 
+/* Container for the navigation links Can be used to add more links later when needed*/
 .nav-links {
     display: flex;
     gap: 30px;
@@ -35,26 +39,31 @@ nav {
     text-decoration: none;
 }
 
+/* This can be used for hovering */
 .nav-links a:hover, .nav-links a.active {
     color: #00d4ff;
 }
 
+/* Main Container, this checks the alignment of the content */
 main {
     max-width: 1400px;
     margin: 0 auto;
 }
 
+/* Title of the page for battleship */
 h1 {
     text-align: center;
     color: #00d4ff;
     margin-bottom: 30px;
 }
 
+/* These are the headers for your feelt and target grid */
 h2 {
     color: #00d4ff;
     margin-bottom: 15px;
 }
 
+/* Layout for boarder used is flexbox so items wrap automatically, no need for inputing pixels for caluculations */
 .boards {
     display: flex;
     justify-content: center;
@@ -62,15 +71,17 @@ h2 {
     flex-wrap: wrap;
 }
 
+/* Individual boarder container for box */
 .board-container {
     background: #16213e;
     padding: 20px;
     border-radius: 8px;
 }
 
+/* This os is the reuirement for the grid to be 12 x 12 */
 .board {
-    display: flex;
-    flex-wrap: wrap;
+    display: flex;   /* This ir the flexbox for tiles */
+    flex-wrap: wrap; /* This is the wrap for the tile rows to be automatic*/
     width: 442px;
     height: 442px;
     background: #0a0e27;
@@ -207,6 +218,7 @@ h2 {
     color: #aaa;
 }
 
+/* Stats row in match card Shots, Hits, Accuracy, Duration */
 .match-stats {
     display: flex;
     justify-content: space-around;
@@ -244,19 +256,74 @@ h2 {
     color: #aaa;
 }
 
+/* I need to add more response design to cater for mobile */
 @media (max-width: 768px) {
+    /* Enable boards to be stacked vertically if used on mobile*/
     .boards {
         flex-direction: column;
         align-items: center;
     }
     
+    /* Make boards smaller on mobile */
     .board {
         width: 340px;
         height: 340px;
     }
     
+    /* Make tiles smaller on mobile */
     .tile {
         width: 26px;
         height: 26px;
     }
+}
+
+/* Board wrapper and labels */
+.board-wrapper {
+    /* Gives the ability to shrink to content size */
+    display: inline-block;
+}
+
+/* Column labels - sits above the board */
+.column-labels {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 2px;
+    margin-left: 40px; /* Space for row labels */
+    padding-left: 6px; /* Match board padding */
+}
+
+.column-labels div {
+    width: 34px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00d4ff;  
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Container for row labels & board side by side */
+.board-with-rows {
+    display: flex;
+    gap: 6px; /* Space between labels and board */
+}
+
+/* Row labels - sits to the left of the board */
+.row-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 6px; /* Match board padding */
+}
+
+.row-labels div {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00d4ff;  
+    font-weight: bold;
+    font-size: 14px;
 }
