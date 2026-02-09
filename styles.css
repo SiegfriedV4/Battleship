@@ -14,7 +14,7 @@ body {
 
 /* Top navigation container - uses flexbox for layout */
 nav {
-    background: #232e4d;
+    background: #415899;
     padding: 15px 30px;
     display: flex;
     justify-content: space-between;
@@ -53,7 +53,7 @@ main {
 /* Title of the page for battleship */
 h1 {
     text-align: center;
-    color: #00d4ff;
+    color: #3c6871;
     margin-bottom: 30px;
 }
 
@@ -73,7 +73,7 @@ h2 {
 
 /* Individual boarder container for box */
 .board-container {
-    background: #16213e;
+    background: #ae3b91;
     padding: 20px;
     border-radius: 8px;
 }
@@ -92,7 +92,7 @@ h2 {
 .tile {
     width: 34px;
     height: 34px;
-    background: #1e3a5f;
+    background: #5087d0;
     cursor: pointer;
 }
 
@@ -107,7 +107,7 @@ h2 {
 .tile.destroyer { background: #607d8b; }
 
 .tile.hit {
-    background: #e74c3c;
+    background: #d02410;
     position: relative;
 }
 
@@ -173,7 +173,7 @@ h2 {
 }
 
 .history-container {
-    background: #16213e;
+    background: #314b94;
     padding: 30px;
     border-radius: 8px;
     max-width: 1000px;
@@ -187,7 +187,7 @@ h2 {
 }
 
 .match-card {
-    background: #0a0e27;
+    background: #070b21;
     border-radius: 8px;
     padding: 20px;
 }
