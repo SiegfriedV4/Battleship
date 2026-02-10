@@ -1,7 +1,7 @@
 /*grid constants*/
 const GRID_SIZE = 12;
 
-/* This will be replaced by random placement later*/
+/*This will be replaced by random placement later*/
 const ships = [
     { type: 'carrier', startRow: 2, startCol: 1, length: 5, orientation: 'H' },
     { type: 'battleship', startRow: 5, startCol: 7, length: 4, orientation: 'V' },
