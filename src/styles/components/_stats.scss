@@ -1,0 +1,11 @@
+.stats {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  span {
+    color: #00d4ff;
+    font-weight: bold;
+  }
+}

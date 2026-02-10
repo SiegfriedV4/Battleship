@@ -1,0 +1,18 @@
+/* src/styles/main.scss */
+
+@use "./base/reset";
+@use "./base/variables";
+@use "./base/typography";
+
+@use "./layout/nav";
+@use "./layout/boards";
+@use "./layout/labels";
+
+@use "./components/tiles";
+@use "./components/legend";
+@use "./components/stats";
+@use "./components/history";
+
+@use "./pages/game";
+
+@use "./responsive/mobile";

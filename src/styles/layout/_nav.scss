@@ -1,0 +1,28 @@
+nav {
+  background: #415899;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.nav-brand {
+  font-size: 24px;
+  font-weight: bold;
+  color: #00d4ff;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+
+  a {
+    color: #aaa;
+    text-decoration: none;
+
+    &:hover,
+    &.active {
+      color: #00d4ff;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+@media (max-width: 768px) {
+  .boards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .board {
+    width: 340px;
+    height: 340px;
+  }
+
+  .tile {
+    width: 26px;
+    height: 26px;
+  }
+}

@@ -1,0 +1,45 @@
+.history-container {
+  background: #314b94;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.match-card {
+  background: #070b21;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.match-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.match-result {
+  font-weight: bold;
+  padding: 8px 15px;
+  border-radius: 4px;
+
+  &.win {
+    background: #27ae60;
+    color: white;
+  }
+
+  &.loss {
+    background: #e74c3c;
+    color: white;
+  }
+}
+
+.match-date {
+  color: #aaa;
+}

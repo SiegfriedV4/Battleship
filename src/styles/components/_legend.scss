@@ -1,0 +1,23 @@
+.legend {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+//.color {
+//  width: 25px;
+//  height: 15px;
+//
+//  &.carrier { background: #2c3e50; }
+//  &.battleship { background: #34495e; }
+//  &.cruiser { background: #475569; }
+//  &.submarine { background: #546e7a; }
+//  &.destroyer { background: #607d8b; }
+//}

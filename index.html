@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Battleship Game</title>
-    <link rel="stylesheet" href="styles.css">
+    
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
+    <link rel="stylesheet" href="/src/styles/main.scss" />
 </head>
 <body>
     <nav>
@@ -38,7 +40,7 @@
             </div>
             <button id="clear-ships">Clear All Ships</button>
             <button id="random-ships">Random Placement</button>
-            <button id="start-game">Start Game</button>
+            <!--<button id="start-game">Start Game</button> -->
             <button id="fire-random">Fire</button>
 
         </div>
@@ -79,13 +81,13 @@
                         <div id="player-board" class="board"></div>
                     </div>
                 </div>
-                <div class="legend">
+                <!--<div class="legend">
                     <div><span class="color carrier"></span> Carrier (5)</div>
                     <div><span class="color battleship"></span> Battleship (4)</div>
                     <div><span class="color cruiser"></span> Cruiser (3)</div>
                     <div><span class="color submarine"></span> Submarine (3)</div>
-                    <div><span class="color destroyer"></span> Destroyer (2)</div>
-                </div>
+                    <div><span class="color destroyer"></span> Destroyer (2)</div> 
+                </div> -->
             </div>
 
             <div class="board-container">
@@ -132,6 +134,6 @@
         </div>
     </main>
 
-    <script src="app.js"></script>
+    <script type="module" src="/src/js/app.js"></script>
 </body>
 </html>
