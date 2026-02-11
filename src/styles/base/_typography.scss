@@ -1,5 +1,7 @@
+@use "./variables";
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: variables.$font-body;
   background: #1a1a2e;
   color: #eee;
   padding: 20px;
@@ -7,11 +9,18 @@ body {
 
 h1 {
   text-align: center;
-  color: #3c6871;
+  color: #3dc7e3;
   margin-bottom: 30px;
 }
 
 h2 {
-  color: #00d4ff;
+  color: #de2828;
   margin-bottom: 15px;
+}
+
+h1, h2, h3 {
+  font-family: variables.$font-heading;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }

@@ -1,16 +1,26 @@
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  :root {
+    --tile-size: 28px;
+    --label-size: 28px;
+  }
+
+  .boards {
+    gap: 25px;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --tile-size: 24px;
+    --label-size: 24px;
+  }
+
   .boards {
     flex-direction: column;
     align-items: center;
   }
 
-  .board {
-    width: 340px;
-    height: 340px;
-  }
-
-  .tile {
-    width: 26px;
-    height: 26px;
+  .board-container {
+    width: auto;
   }
 }

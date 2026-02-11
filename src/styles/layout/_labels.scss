@@ -1,36 +1,28 @@
 .column-labels {
-  display: flex;
-  gap: 2px;
-  margin-bottom: 2px;
-  margin-left: 40px;
-  padding-left: 6px;
+  display: grid;
+  grid-template-columns: repeat(12, var(--tile-size));
+  gap: var(--tile-gap);
 
-  div {
-    width: 34px;
-    height: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #00d4ff;
-    font-weight: bold;
-    font-size: 14px;
-  }
+  margin-left: var(--label-size);
+  padding-left: var(--board-padding);
+}
+
+.column-labels div {
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .row-labels {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-top: 6px;
+  display: grid;
+  grid-template-rows: repeat(12, var(--tile-size));
+  gap: var(--tile-gap);
+}
 
-  div {
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #00d4ff;
-    font-weight: bold;
-    font-size: 14px;
-  }
+.row-labels div {
+  width: var(--label-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -1,9 +1,16 @@
 $background-main: #1a1a2e;
 $background-board: #0a0e27;
-$background-nav: #415899;
+$background-nav: #181f31;
 $accent-blue: #00d4ff;
 $text-light: #eee;
 $text-muted: #aaa;
 
-$tile-size: 34px;
-$tile-size-mobile: 26px;
+$font-heading: 'Orbitron', sans-serif;
+$font-body: 'Orbitron', sans-serif; 
+
+:root {
+  --tile-size: 34px;
+  --tile-gap: 2px;
+  --board-padding: 6px;
+  --label-size: 34px;
+}

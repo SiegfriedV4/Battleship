@@ -6,19 +6,36 @@
 }
 
 .board-container {
-  background: #ae3b91;
+  background: #1a2564;
   padding: 20px;
   border-radius: 8px;
 }
 
+//.board {
+//  display: flex;
+//  flex-wrap: wrap;
+//  width: 442px;
+//  height: 442px;
+//  background: #0a0e27;
+//  padding: 6px;
+//  gap: 2px;
+//}
+
 .board {
   display: flex;
   flex-wrap: wrap;
-  width: 442px;
-  height: 442px;
-  background: #0a0e27;
-  padding: 6px;
-  gap: 2px;
+
+  width: calc(
+    (var(--tile-size) * 12) +
+    (var(--tile-gap) * 11) +
+    (var(--board-padding) * 2)
+  );
+
+  aspect-ratio: 1 / 1;
+
+  background: #354bd6;
+  padding: var(--board-padding);
+  gap: var(--tile-gap);
 }
 
 .board-wrapper {

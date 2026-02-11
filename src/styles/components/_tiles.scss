@@ -1,6 +1,6 @@
 .tile {
-  width: 34px;
-  height: 34px;
+  width: var(--tile-size);
+  height: var(--tile-size);
   background: #5087d0;
   cursor: pointer;
 
