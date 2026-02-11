@@ -1,3 +1,88 @@
+// WebSocket connection
+window.socket = new WebSocket("ws://localhost:4000");
+
+socket.addEventListener("open", () => {
+    console.log("✅ Connected to server");
+    registerTestUser();
+});
+
+socket.addEventListener("message", (event) => {
+    const data = JSON.parse(event.data);
+    console.log("📩 Server says:", data);
+
+    handleServerMessage(data);
+});
+
+socket.addEventListener("close", () => {
+    console.log("❌ Disconnected from server");
+});
+
+function handleServerMessage(message) {
+    switch (message.type) {
+
+        case "auth_success":
+            console.log("Logged in!");
+            localStorage.setItem("sessionToken", message.sessionToken);
+
+            socket.send(JSON.stringify({
+                type: "list_players"
+            }));
+        
+            break;
+        
+
+        case "player_list":
+            console.log("Players:", message.players);
+            break;
+
+        case "invite_received":
+            console.log("Invite from:", message.from);
+            break;
+
+        case "game_start":
+            console.log("Game started. Your turn:", message.yourTurn);
+            break;
+
+        case "shot_result":
+            console.log("Shot result:", message);
+            break;
+
+        case "game_over":
+            alert("Game Over! Winner: " + message.winner);
+            break;
+
+        case "invite_accepted":
+            console.log("Game created:", message.gameId);
+            break;
+
+        case "ships_accepted":
+            console.log("Ships accepted by server");
+            break;
+
+        case "waiting_for_opponent":
+            console.log("Waiting for opponent to place ships...");
+            break;
+
+        case "game_start":
+            console.log("Game started. Your turn:", message.yourTurn);
+            break;
+                
+        default:
+            console.log("Unhandled message:", message);
+    }
+}
+
+function registerTestUser() {
+    const randomUser = "player" + Math.floor(Math.random() * 1000);
+
+    socket.send(JSON.stringify({
+        type: "register",
+        username: randomUser,
+        password: "password123"
+    }));
+}
+
+
 /* =========================
    GRID & SHIP CONSTANTS
 ========================= */
