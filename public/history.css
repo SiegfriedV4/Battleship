@@ -1,0 +1,50 @@
+body {
+    font-family: "Orbitron", sans-serif;
+    padding: 20px;
+    background: #0f172a;
+    color: white;
+}
+
+h1, h2 {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+h1 {
+    text-align: center;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 4px;
+}
+
+input {
+    margin: 5px;
+    padding: 5px;
+}
+
+button {
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    border: 1px solid #444;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background: #1e293b;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+tr:nth-child(even) {
+    background: #1f2937;
+}

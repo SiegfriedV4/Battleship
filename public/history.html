@@ -2,32 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Match History - Battleship</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Battleship Match History</title>
+        <!-- Links import for font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="history.css">
 </head>
 <body>
-    <nav>
-        <div class="nav-brand">⚓ Battleship</div>
-        <div class="nav-links">
-            <a href="index.html">Game</a>
-            <a href="history.html" class="active">Match History</a>
-        </div>
-    </nav>
 
-    <main>
-        <div class="history-container">
-            <h1>Match History</h1>
-            
-            <div id="match-list" class="match-list">
-                <!-- Matches will be dynamically loaded here from localStorage -->
-            </div>
+    <h1>⚓ Battleship Match History</h1>
 
-            <div class="no-matches">
-                <p>No matches played yet. Start a game to build your history!</p>
-            </div>
-        </div>
-    </main>
+    <section class="add-game">
+        <h2>Add Test Match</h2>
+
+        <input type="text" id="player1" placeholder="Player 1">
+        <input type="text" id="player2" placeholder="Player 2">
+        <input type="text" id="winner" placeholder="Winner">
+        <input type="number" id="duration" placeholder="Duration (seconds)">
+        <input type="number" id="shots" placeholder="Total Shots">
+
+        <button onclick="addMatch()">Save Match</button>
+    </section>
+
+    <hr>
+
+    <section class="history-table">
+        <h2>Match History</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Player 1</th>
+                    <th>Player 2</th>
+                    <th>Winner</th>
+                    <th>Duration</th>
+                    <th>Total Shots</th>
+                </tr>
+            </thead>
+            <tbody id="history-body">
+                <!-- JS will insert rows here -->
+            </tbody>
+        </table>
+    </section>
 
     <script src="history.js"></script>
 </body>
