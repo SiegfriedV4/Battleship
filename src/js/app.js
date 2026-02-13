@@ -243,9 +243,9 @@ function handleServerMessage(message) {
         case "game_start":
             opponent = message.opponent;
             yourTurn = message.yourTurn;
-            
+
             localStorage.setItem("matchStartTime", Date.now());
-            
+
             alert(yourTurn ? "Your turn!" : "Opponent's turn");
             break;
 
@@ -273,19 +273,19 @@ function handleServerMessage(message) {
             }
             break;
 
-        case "rematch_requested":
-            const accept = confirm(`${message.from} wants a rematch. Accept?`);
-
-            sendToServer({
-                type: accept ? "accept_rematch" : "decline_rematch",
-                opponent: message.from
-            });
-            break;
-        
-        case "rematch_declined":
-            alert("Opponent declined the rematch.");
-            break;
-    
+//        case "rematch_requested":
+//            const accept = confirm(`${message.from} wants a rematch. Accept?`);
+//
+//            sendToServer({
+//                type: accept ? "accept_rematch" : "decline_rematch",
+//                opponent: message.from
+//            });
+//            break;
+//        
+//        case "rematch_declined":
+//            alert("Opponent declined the rematch.");
+//            break;
+//    
 
         case "game_over":
 
@@ -371,16 +371,16 @@ function startBattle() {
 /* =========================
    REQUESTING REMACTCH 
 ========================= */
-function requestRematch() {
-    if (!opponent) return;
-
-    sendToServer({
-        type: "request_rematch",
-        opponent
-    });
-
-    alert("Rematch request sent. Waiting for opponent...");
-}
+//function requestRematch() {
+//    if (!opponent) return;
+//
+//    sendToServer({
+//        type: "request_rematch",
+//        opponent
+//    });
+//
+//    alert("Rematch request sent. Waiting for opponent...");
+//}
 
 function resetLocalGameState() {
     placedShips = [];
@@ -412,7 +412,7 @@ function startGame() {
     document.getElementById('fire-random')?.addEventListener('click', startBattle);
     document.getElementById('random-ships')?.addEventListener('click', placeShipsRandomly);
     document.getElementById('clear-ships')?.addEventListener('click', clearShips);
-    document.getElementById('restart-game')?.addEventListener('click', requestRematch);
+ //   document.getElementById('restart-game')?.addEventListener('click', requestRematch);
 
     updateStats();
 }
