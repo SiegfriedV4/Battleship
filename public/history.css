@@ -48,3 +48,19 @@ th {
 tr:nth-child(even) {
     background: #1f2937;
 }
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.win {
+    color: #22c55e;
+    font-weight: bold;
+}
+
+.loss {
+    color: #ef4444;
+    font-weight: bold;
+}

@@ -3,7 +3,6 @@ const STORAGE_KEY = "battleship_match_history";
 /* ==========================================
    LOAD MATCHES
 ========================================== */
-
 function loadMatches() {
     const saved = localStorage.getItem(STORAGE_KEY);
     return saved ? JSON.parse(saved) : [];
@@ -12,84 +11,59 @@ function loadMatches() {
 /* ==========================================
    SAVE MATCHES
 ========================================== */
-
 function saveMatches(matches) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(matches));
 }
 
 /* ==========================================
-   ADD MATCH
-========================================== */
-
-function addMatch() {
-
-    const player1 = document.getElementById("player1").value;
-    const player2 = document.getElementById("player2").value;
-    const winner = document.getElementById("winner").value;
-    const duration = document.getElementById("duration").value;
-    const shots = document.getElementById("shots").value;
-
-    if (!player1 || !player2 || !winner) {
-        alert("Please fill in all required fields");
-        return;
-    }
-
-    const newMatch = {
-        id: crypto.randomUUID(),
-        date: new Date().toISOString(),
-        players: [player1, player2],
-        winner: winner,
-        durationSeconds: Number(duration),
-        totalShots: Number(shots)
-    };
-
-    const matches = loadMatches();
-    matches.push(newMatch);
-    saveMatches(matches);
-
-    renderMatches();
-    clearInputs();
-}
-
-/* ==========================================
    RENDER TABLE
 ========================================== */
-
 function renderMatches() {
-
     const matches = loadMatches();
     const tableBody = document.getElementById("history-body");
+    const currentUser = localStorage.getItem("username");
 
     tableBody.innerHTML = "";
 
-    matches.forEach(match => {
+    matches
+        .slice()
+        .reverse()
+        .forEach(match => {
 
-        const row = document.createElement("tr");
+            const isWin = match.winner === currentUser;
 
-        row.innerHTML = `
-            <td>${new Date(match.date).toLocaleString()}</td>
-            <td>${match.players[0]}</td>
-            <td>${match.players[1]}</td>
-            <td>${match.winner}</td>
-            <td>${match.durationSeconds}s</td>
-            <td>${match.totalShots}</td>
-        `;
+            const row = document.createElement("tr");
 
-        tableBody.appendChild(row);
-    });
+            row.innerHTML = `
+                <td>${new Date(match.date).toLocaleString()}</td>
+                <td>${currentUser}</td>
+                <td>${match.opponent}</td>
+                <td class="${isWin ? "win" : "loss"}">
+                    ${isWin ? "WIN" : "LOSS"}
+                </td>
+                <td>${match.durationSeconds}s</td>
+                <td>${match.totalShots}</td>
+            `;
+
+            tableBody.appendChild(row);
+        });
 }
 
 /* ==========================================
-   CLEAR FORM
+   CLEAR HISTORY
 ========================================== */
+function clearHistory() {
+    if (!confirm("Clear all match history?")) return;
 
-function clearInputs() {
-    document.querySelectorAll(".add-game input")
-        .forEach(input => input.value = "");
+    localStorage.removeItem(STORAGE_KEY);
+    renderMatches();
 }
 
 /* ==========================================
    INIT
 ========================================== */
-
-document.addEventListener("DOMContentLoaded", renderMatches);
+document.addEventListener("DOMContentLoaded", () => {
+    renderMatches();
+    document.getElementById("clear-history")
+        .addEventListener("click", clearHistory);
+});

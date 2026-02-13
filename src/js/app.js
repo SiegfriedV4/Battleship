@@ -1,6 +1,10 @@
-/* =========================
-   GRID & SHIP CONSTANTS
-========================= */
+import { initSocket, sendToServer } from './websocket.js';
+import { renderPlayerList, showInvite, showGameScreen } from './lobbyUI.js';
+
+let gameId = null;
+let opponent = null;
+let yourTurn = false;
+let shipsSentToServer = false;
 
 const GRID_SIZE = 12;
 
@@ -12,14 +16,9 @@ const SHIP_DEFINITIONS = [
     { type: 'destroyer', length: 2 }
 ];
 
-/* =========================
-   GAME STATE
-========================= */
-
 let placedShips = [];
 let totalHits = 0;
 let totalMisses = 0;
-let gameHasStarted = false;
 
 /* =========================
    BOARD CREATION
@@ -46,43 +45,8 @@ function getTileAt(boardElement, row, col) {
 }
 
 /* =========================
-   SHIP PLACEMENT LOGIC
+   SHIP PLACEMENT
 ========================= */
-
-function canPlaceShip(startRow, startCol, length, orientation) {
-    for (let offset = 0; offset < length; offset++) {
-        const row =
-            orientation === 'H' ? startRow : startRow + offset;
-        const col =
-            orientation === 'H' ? startCol + offset : startCol;
-
-        if (row >= GRID_SIZE || col >= GRID_SIZE) {
-            return false;
-        }
-
-        if (isShipAtPosition(row, col)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function placeShipOnBoard(boardElement, ship) {
-    for (let offset = 0; offset < ship.length; offset++) {
-        const row =
-            ship.orientation === 'H'
-                ? ship.startRow
-                : ship.startRow + offset;
-
-        const col =
-            ship.orientation === 'H'
-                ? ship.startCol + offset
-                : ship.startCol;
-
-        const tile = getTileAt(boardElement, row, col);
-        tile.classList.add(ship.type);
-    }
-}
 
 function isShipAtPosition(row, col) {
     return placedShips.some(ship => {
@@ -105,218 +69,334 @@ function isShipAtPosition(row, col) {
     });
 }
 
-/* =========================
-   PLAYER SHIP PLACEMENT
-========================= */
+function canPlaceShip(startRow, startCol, length, orientation) {
+    for (let offset = 0; offset < length; offset++) {
+        const row = orientation === 'H' ? startRow : startRow + offset;
+        const col = orientation === 'H' ? startCol + offset : startCol;
 
-function isShipAlreadyPlaced(shipType) {
-    return placedShips.some(ship => ship.type === shipType);
+        if (row >= GRID_SIZE || col >= GRID_SIZE) return false;
+        if (isShipAtPosition(row, col)) return false;
+    }
+    return true;
 }
 
-function handlePlayerPlacement(event) {
-    if (gameHasStarted) return;
+function placeShipOnBoard(boardElement, ship) {
+    for (let offset = 0; offset < ship.length; offset++) {
+        const row =
+            ship.orientation === 'H'
+                ? ship.startRow
+                : ship.startRow + offset;
 
-    const tile = event.target;
-    if (!tile.classList.contains('tile')) return;
+        const col =
+            ship.orientation === 'H'
+                ? ship.startCol + offset
+                : ship.startCol;
 
-    if (placedShips.length >= SHIP_DEFINITIONS.length) {
-        alert('⚠ All ships have already been placed');
-        return;
+        const tile = getTileAt(boardElement, row, col);
+        tile.classList.add(ship.type);
     }
-
-    const shipType = document.getElementById('ship-select').value;
-    const orientation = document.getElementById('orientation-select').value;
-
-    if (isShipAlreadyPlaced(shipType)) {
-        alert(`⚠ ${shipType} already placed`);
-        return;
-    }
-
-    const shipDefinition = SHIP_DEFINITIONS.find(
-        ship => ship.type === shipType
-    );
-
-    const startRow = Number(tile.dataset.row);
-    const startCol = Number(tile.dataset.col);
-
-    if (
-        !canPlaceShip(
-            startRow,
-            startCol,
-            shipDefinition.length,
-            orientation
-        )
-    ) {
-        alert('❌ Invalid placement');
-        return;
-    }
-
-    const ship = {
-        type: shipType,
-        length: shipDefinition.length,
-        startRow,
-        startCol,
-        orientation
-    };
-
-    placedShips.push(ship);
-    placeShipOnBoard(
-        document.getElementById('player-board'),
-        ship
-    );
 }
-/* Helper  to rebind the click listeners */
-function bindFiringBoardEvents() {
-    const firingBoard = document.getElementById('firing-board');
 
-    firingBoard.querySelectorAll('.tile').forEach(tile => {
-        tile.addEventListener('click', () => fireAtTile(tile));
+function clearShips() {
+    placedShips = [];
+    const playerBoard = document.getElementById("player-board");
+
+    playerBoard.querySelectorAll(".tile").forEach(tile => {
+        tile.className = "tile";
     });
 }
 
-/* =========================
-   CLEAR & RANDOM PLACEMENT
-========================= */
-
-function clearAllShips() {
-    placedShips = [];
-    gameHasStarted = false;
-    totalHits = 0;
-    totalMisses = 0;
-
-    createBoard(document.getElementById('player-board'));
-    createBoard(document.getElementById('firing-board'));
-
-    bindFiringBoardEvents();
-    updateStatsDisplay();
-}
-
 function placeShipsRandomly() {
-    clearAllShips();
-
-    const board = document.getElementById('player-board');
+    clearShips();
+    const playerBoard = document.getElementById("player-board");
 
     SHIP_DEFINITIONS.forEach(shipDef => {
         let placed = false;
 
         while (!placed) {
-            const orientation = Math.random() < 0.5 ? 'H' : 'V';
-            const startRow = Math.floor(Math.random() * GRID_SIZE);
-            const startCol = Math.floor(Math.random() * GRID_SIZE);
+            const orientation = Math.random() > 0.5 ? "H" : "V";
+            const row = Math.floor(Math.random() * GRID_SIZE);
+            const col = Math.floor(Math.random() * GRID_SIZE);
 
-            if (
-                canPlaceShip(
-                    startRow,
-                    startCol,
-                    shipDef.length,
-                    orientation
-                )
-            ) {
+            if (canPlaceShip(row, col, shipDef.length, orientation)) {
                 const ship = {
                     type: shipDef.type,
                     length: shipDef.length,
-                    startRow,
-                    startCol,
+                    startRow: row,
+                    startCol: col,
                     orientation
                 };
 
                 placedShips.push(ship);
-                placeShipOnBoard(board, ship);
+                placeShipOnBoard(playerBoard, ship);
                 placed = true;
             }
         }
     });
 }
 
-/* =========================
-   FIRING LOGIC
-========================= */
+function handlePlayerPlacement(event) {
+    const tile = event.target;
+    if (!tile.classList.contains('tile')) return;
 
-function fireAtTile(tile) {
-    if (!gameHasStarted) return;
-
-    if (
-        tile.classList.contains('hit') ||
-        tile.classList.contains('miss')
-    ) {
+    if (placedShips.length >= SHIP_DEFINITIONS.length) {
+        alert('All ships placed');
         return;
     }
 
-    const row = Number(tile.dataset.row);
-    const col = Number(tile.dataset.col);
+    const shipType = document.getElementById('ship-select').value;
+    const orientation = document.getElementById('orientation-select').value;
 
-    if (isShipAtPosition(row, col)) {
-        tile.classList.add('hit');
-        totalHits++;
-    } else {
-        tile.classList.add('miss');
-        totalMisses++;
+    if (placedShips.some(s => s.type === shipType)) {
+        alert(`${shipType} already placed`);
+        return;
     }
 
-    updateStatsDisplay();
-    checkWinCondition();
-}
+    const shipDef = SHIP_DEFINITIONS.find(s => s.type === shipType);
+    const startRow = Number(tile.dataset.row);
+    const startCol = Number(tile.dataset.col);
 
-function fireRandomShot() {
-    const firingBoard = document.getElementById('firing-board');
-    const tiles = Array.from(firingBoard.querySelectorAll('.tile'));
+    if (!canPlaceShip(startRow, startCol, shipDef.length, orientation)) {
+        alert('Invalid placement');
+        return;
+    }
 
-    const availableTiles = tiles.filter(
-        tile =>
-            !tile.classList.contains('hit') &&
-            !tile.classList.contains('miss')
-    );
+    const ship = {
+        type: shipType,
+        length: shipDef.length,
+        startRow,
+        startCol,
+        orientation
+    };
 
-    if (availableTiles.length === 0) return;
-
-    const randomTile =
-        availableTiles[
-            Math.floor(Math.random() * availableTiles.length)
-        ];
-
-    fireAtTile(randomTile);
+    placedShips.push(ship);
+    placeShipOnBoard(document.getElementById('player-board'), ship);
 }
 
 /* =========================
-   STATS & GAME FLOW
+   FIRING
 ========================= */
 
-function updateStatsDisplay() {
-    document.getElementById('hits').textContent = totalHits;
-    document.getElementById('misses').textContent = totalMisses;
+function bindFiringBoardEvents() {
+    const firingBoard = document.getElementById('firing-board');
 
-    const totalShots = totalHits + totalMisses;
-    const accuracy =
-        totalShots === 0
-            ? 0
-            : ((totalHits / totalShots) * 100).toFixed(1);
+    firingBoard.querySelectorAll('.tile').forEach(tile => {
+        tile.addEventListener('click', () => {
+            if (!yourTurn || !shipsSentToServer) return;
 
-    document.getElementById('accuracy').textContent = accuracy + '%';
+            const row = Number(tile.dataset.row);
+            const col = Number(tile.dataset.col);
+            const coordinate = convertToCoordinate(row, col);
+
+            sendToServer({
+                type: "shoot",
+                coordinate
+            });
+        });
+    });
 }
 
-function checkWinCondition() {
-    const totalShipTiles = placedShips.reduce(
-        (sum, ship) => sum + ship.length,
-        0
-    );
+/* =========================
+   STATS
+========================= */
 
-    if (totalHits === totalShipTiles) {
-        alert('🎉 Victory! All ships destroyed!');
+function updateStats() {
+    const accuracy =
+        totalHits + totalMisses === 0
+            ? 0
+            : ((totalHits / (totalHits + totalMisses)) * 100).toFixed(1);
+
+    document.getElementById("hits").textContent = totalHits;
+    document.getElementById("misses").textContent = totalMisses;
+    document.getElementById("accuracy").textContent = accuracy + "%";
+}
+
+/* =========================
+   SERVER HANDLER
+========================= */
+
+function handleServerMessage(message) {
+    console.log("📩 From server:", message);
+
+    switch (message.type) {
+
+        case "auth_success":
+            localStorage.setItem("sessionToken", message.sessionToken);
+            localStorage.setItem("username", message.user.username);
+            sendToServer({ type: "list_players" });
+            break;
+
+        case "player_list":
+            renderPlayerList(message.players);
+            break;
+
+        case "invite_received":
+            showInvite(message.from, message.inviteId);
+            break;
+
+        case "invite_accepted":
+            gameId = message.gameId;
+            resetLocalGameState();
+            showGameScreen();
+            break;
+
+        case "game_start":
+            opponent = message.opponent;
+            yourTurn = message.yourTurn;
+            
+            localStorage.setItem("matchStartTime", Date.now());
+            
+            alert(yourTurn ? "Your turn!" : "Opponent's turn");
+            break;
+
+
+        case "turn_change":
+            yourTurn = message.currentTurn === localStorage.getItem("username");
+            alert(yourTurn ? "Your turn!" : "Opponent's turn");
+            break;
+
+        case "shot_result":
+            const shotTile = getTileFromCoordinate(message.coordinate, "firing-board");
+            if (shotTile) {
+                if (message.hit) totalHits++;
+                else totalMisses++;
+
+                shotTile.classList.add(message.hit ? "hit" : "miss");
+                updateStats();
+            }
+            break;
+
+        case "shot_fired":
+            const playerTile = getTileFromCoordinate(message.coordinate, "player-board");
+            if (playerTile) {
+                playerTile.classList.add(message.hit ? "hit" : "miss");
+            }
+            break;
+
+        case "rematch_requested":
+            const accept = confirm(`${message.from} wants a rematch. Accept?`);
+
+            sendToServer({
+                type: accept ? "accept_rematch" : "decline_rematch",
+                opponent: message.from
+            });
+            break;
+        
+        case "rematch_declined":
+            alert("Opponent declined the rematch.");
+            break;
+    
+
+        case "game_over":
+
+            const startTime = localStorage.getItem("matchStartTime");
+            const duration = startTime
+                ? Math.floor((Date.now() - Number(startTime)) / 1000)
+                : 0;
+
+            const matchRecord = {
+                id: crypto.randomUUID(),
+                date: new Date().toISOString(),
+                opponent: opponent,
+                winner: message.winner,
+                durationSeconds: duration,
+                totalShots: totalHits + totalMisses
+            };
+        
+            const history = JSON.parse(
+                localStorage.getItem("battleship_match_history") || "[]"
+            );
+        
+            history.push(matchRecord);
+        
+            localStorage.setItem(
+                "battleship_match_history",
+                JSON.stringify(history)
+            );
+        
+            alert("Game Over! Winner: " + message.winner);
+        
+            shipsSentToServer = false;
+            yourTurn = false;
+            break;
+
     }
 }
+
+/* =========================
+   HELPERS
+========================= */
+
+function convertToCoordinate(row, col) {
+    const letters = "ABCDEFGHIJKL";
+    return letters[col] + (row + 1);
+}
+
+function getTileFromCoordinate(coord, boardId) {
+    const letters = "ABCDEFGHIJKL";
+    const col = letters.indexOf(coord[0]);
+    const row = parseInt(coord.slice(1)) - 1;
+
+    return document
+        .getElementById(boardId)
+        .querySelector(`[data-row="${row}"][data-col="${col}"]`);
+}
+
+/* =========================
+   GAME CONTROL
+========================= */
 
 function startBattle() {
     if (placedShips.length !== SHIP_DEFINITIONS.length) {
-        alert('⚠ Place all 5 ships before starting');
+        alert("Place all ships first");
         return;
     }
 
-    gameHasStarted = true;
-    alert('🔥 Battle started!');
+    if (shipsSentToServer) return;
+
+    const shipsPayload = placedShips.map(ship => ({
+        type: ship.type,
+        start: convertToCoordinate(ship.startRow, ship.startCol),
+        orientation: ship.orientation === "H" ? "horizontal" : "vertical"
+    }));
+
+    sendToServer({
+        type: "place_ships",
+        ships: shipsPayload
+    });
+
+    shipsSentToServer = true;
 }
 
 /* =========================
-   GAME INITIALISATION
+   REQUESTING REMACTCH 
+========================= */
+function requestRematch() {
+    if (!opponent) return;
+
+    sendToServer({
+        type: "request_rematch",
+        opponent
+    });
+
+    alert("Rematch request sent. Waiting for opponent...");
+}
+
+function resetLocalGameState() {
+    placedShips = [];
+    shipsSentToServer = false;
+    yourTurn = false;
+    totalHits = 0;
+    totalMisses = 0;
+
+    createBoard(document.getElementById("player-board"));
+    createBoard(document.getElementById("firing-board"));
+    bindFiringBoardEvents();
+    updateStats();
+}
+
+/* =========================
+   INIT
 ========================= */
 
 function startGame() {
@@ -327,28 +407,17 @@ function startGame() {
     createBoard(firingBoard);
 
     playerBoard.addEventListener('click', handlePlayerPlacement);
-
     bindFiringBoardEvents();
 
-    document
-        .getElementById('clear-ships')
-        .addEventListener('click', clearAllShips);
+    document.getElementById('fire-random')?.addEventListener('click', startBattle);
+    document.getElementById('random-ships')?.addEventListener('click', placeShipsRandomly);
+    document.getElementById('clear-ships')?.addEventListener('click', clearShips);
+    document.getElementById('restart-game')?.addEventListener('click', requestRematch);
 
-    document
-        .getElementById('random-ships')
-        .addEventListener('click', placeShipsRandomly);
-
-    document
-        .getElementById('fire-random')
-        .addEventListener('click', () => {
-            if (!gameHasStarted) {
-                startBattle();
-            } else {
-                fireRandomShot();
-            }
-        });
-
-    updateStatsDisplay();
+    updateStats();
 }
 
-document.addEventListener('DOMContentLoaded', startGame);
+document.addEventListener('DOMContentLoaded', () => {
+    startGame();
+    initSocket(handleServerMessage);
+});

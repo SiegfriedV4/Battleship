@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Battleship Match History</title>
-        <!-- Links import for font-->
+
+    <!-- Orbitron Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
@@ -14,36 +15,25 @@
 
     <h1>⚓ Battleship Match History</h1>
 
-    <section class="add-game">
-        <h2>Add Test Match</h2>
-
-        <input type="text" id="player1" placeholder="Player 1">
-        <input type="text" id="player2" placeholder="Player 2">
-        <input type="text" id="winner" placeholder="Winner">
-        <input type="number" id="duration" placeholder="Duration (seconds)">
-        <input type="number" id="shots" placeholder="Total Shots">
-
-        <button onclick="addMatch()">Save Match</button>
-    </section>
-
-    <hr>
-
     <section class="history-table">
-        <h2>Match History</h2>
+        <div class="history-header">
+            <h2>Recent Matches</h2>
+            <button id="clear-history">Clear History</button>
+        </div>
 
         <table>
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Player 1</th>
-                    <th>Player 2</th>
-                    <th>Winner</th>
+                    <th>You</th>
+                    <th>Opponent</th>
+                    <th>Result</th>
                     <th>Duration</th>
                     <th>Total Shots</th>
                 </tr>
             </thead>
             <tbody id="history-body">
-                <!-- JS will insert rows here -->
+                <!-- JS inserts rows -->
             </tbody>
         </table>
     </section>
