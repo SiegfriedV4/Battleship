@@ -5,7 +5,7 @@ let socket = null;
 ========================= */
 
 export function initSocket(onMessageCallback) {
-    socket = new WebSocket("ws://localhost:3000");
+    socket = new WebSocket("ws://localhost:3000"); 
 
     socket.addEventListener("open", () => {
         console.log("✅ Connected to server");
