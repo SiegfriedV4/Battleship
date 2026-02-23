@@ -8,13 +8,14 @@ import { sendToServer } from '../websocket.js';
 import { convertToCoordinate } from '../board/boardUtils.js';
 import { createBoard } from '../board/boardRenderer.js';
 import { updateStats } from '../stats/statsManager.js';
+import { showWarning, showSuccess } from '../ui/notificationManager.js';
 
 /**
  * Start battle - send ships to server
  */
 export function startBattle() {
     if (gameState.getPlacedShips().length !== SHIP_DEFINITIONS.length) {
-        alert('Place all ships first');
+        showWarning('Place all 5 ships before starting battle!');
         return;
     }
 
@@ -32,6 +33,7 @@ export function startBattle() {
     });
 
     gameState.setShipsSentToServer(true);
+    showSuccess('Ships sent! Waiting for opponent...');
 }
 
 /**

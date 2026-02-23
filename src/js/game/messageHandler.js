@@ -10,6 +10,7 @@ import { getTileFromCoordinate } from '../board/boardUtils.js';
 import { updateStats } from '../stats/statsManager.js';
 import { saveMatchToHistory, setMatchStartTime, getMatchStartTime } from '../storage/matchHistory.js';
 import { resetLocalGameState } from './gameController.js';
+import { showTurnNotification, showGameOver, showSuccess } from '../ui/notificationManager.js';
 
 /**
  * Main handler for all server messages
@@ -76,7 +77,8 @@ function handleGameStart(message) {
 
     setMatchStartTime(Date.now());
 
-    alert(message.yourTurn ? 'Your turn!' : "Opponent's turn");
+    showTurnNotification(message.yourTurn);
+    showSuccess(`Game started! Playing against ${message.opponent}`);
 }
 
 function handleTurnChange(message) {
@@ -84,7 +86,7 @@ function handleTurnChange(message) {
     const isYourTurn = message.currentTurn === username;
     
     gameState.setYourTurn(isYourTurn);
-    alert(isYourTurn ? 'Your turn!' : "Opponent's turn");
+    showTurnNotification(isYourTurn);
 }
 
 function handleShotResult(message) {
@@ -127,7 +129,7 @@ function handleGameOver(message) {
 
     saveMatchToHistory(matchRecord);
 
-    alert('Game Over! Winner: ' + message.winner);
+    showGameOver(message.winner, stats);
 
     gameState.setShipsSentToServer(false);
     gameState.setYourTurn(false);

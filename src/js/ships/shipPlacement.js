@@ -7,6 +7,7 @@ import { gameState } from '../game/gameState.js';
 import { canPlaceShip, isShipAlreadyPlaced } from './shipValidation.js';
 import { placeShipOnBoard } from './shipRenderer.js';
 import { clearBoardShips } from '../board/boardRenderer.js';
+import { showWarning, showSuccess } from '../ui/notificationManager.js';
 
 /**
  * Clear all ships from board and state
@@ -47,6 +48,8 @@ export function placeShipsRandomly() {
             }
         }
     });
+    
+    showSuccess('All ships placed randomly! Click "Fire" to start battle.');
 }
 
 /**
@@ -58,7 +61,7 @@ export function handlePlayerPlacement(event) {
     if (!tile.classList.contains('tile')) return;
 
     if (gameState.getPlacedShips().length >= SHIP_DEFINITIONS.length) {
-        alert('All ships placed');
+        showWarning('All ships already placed!');
         return;
     }
 
@@ -66,7 +69,7 @@ export function handlePlayerPlacement(event) {
     const orientation = document.getElementById('orientation-select').value;
 
     if (isShipAlreadyPlaced(shipType)) {
-        alert(`${shipType} already placed`);
+        showWarning(`${shipType} is already placed. Select a different ship.`);
         return;
     }
 
@@ -75,7 +78,7 @@ export function handlePlayerPlacement(event) {
     const startCol = Number(tile.dataset.col);
 
     if (!canPlaceShip(startRow, startCol, shipDef.length, orientation)) {
-        alert('Invalid placement');
+        showWarning('Cannot place ship here! Try a different position.');
         return;
     }
 
@@ -89,4 +92,11 @@ export function handlePlayerPlacement(event) {
 
     gameState.addShip(ship);
     placeShipOnBoard(document.getElementById('player-board'), ship);
+    
+    const remaining = SHIP_DEFINITIONS.length - gameState.getPlacedShips().length;
+    if (remaining === 0) {
+        showSuccess('All ships placed! Click "Fire" to start battle.');
+    } else {
+        showSuccess(`${shipType} placed! ${remaining} ship(s) remaining.`);
+    }
 }

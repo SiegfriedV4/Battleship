@@ -1,0 +1,110 @@
+/* Notifications styling */
+
+// variables
+@use 'sass:map';
+
+// Variables
+$notification-bg: #16213e;
+$notification-shadow: rgba(0, 0, 0, 0.3);
+$notification-radius: 8px;
+$notification-padding: 15px 20px;
+$notification-z-index: 1000;
+$notification-max-width: 400px;
+$notification-slide-distance: 400px;
+$notification-transition: all 0.3s ease;
+
+// Color scheme
+$colors: (
+  'info': (border: #00d4ff, bg: #16213e),
+  'success': (border: #27ae60, bg: #1a3a2a),
+  'warning': (border: #f39c12, bg: #3a2e1a),
+  'error': (border: #e74c3c, bg: #3a1a1a),
+  'turn': (border: #00d4ff, bg: #1a2a4e)
+);
+
+// ============================================
+// CONTAINER
+// ============================================
+
+#notification-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: $notification-z-index;
+  max-width: $notification-max-width;
+  pointer-events: none;
+}
+
+// ============================================
+// NOTIFICATION BASE
+// ============================================
+
+.game-notification {
+  // Layout
+  padding: $notification-padding;
+  margin-top: 10px;
+  
+  // Appearance
+  background: $notification-bg;
+  color: #eee;
+  border-radius: $notification-radius;
+  border-left: 4px solid map.get(map.get($colors, 'info'), 'border');
+  box-shadow: 0 4px 12px $notification-shadow;
+  
+  // Typography
+  font-size: 14px;
+  line-height: 1.5;
+  
+  // Animation initial state
+  opacity: 0;
+  transform: translateX($notification-slide-distance);
+  transition: $notification-transition;
+  
+  // Interaction
+  pointer-events: auto;
+  cursor: pointer;
+
+  // Show state
+  &.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  // Hover effect
+  &:hover {
+    box-shadow: 0 6px 16px rgba(#00d4ff, 0.3);
+  }
+
+  // ============================================
+  // NOTIFICATION TYPES
+  // ============================================
+  
+  @each $type, $color in $colors {
+    &.#{$type} {
+      border-left-color: map.get($color, 'border');
+      background: map.get($color, 'bg');
+      
+      @if $type == 'turn' {
+        font-weight: bold;
+        font-size: 15px;
+      }
+    }
+  }
+}
+
+// ============================================
+// RESPONSIVE
+// ============================================
+
+@media (max-width: 768px) {
+  #notification-container {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .game-notification {
+    font-size: 13px;
+  }
+}

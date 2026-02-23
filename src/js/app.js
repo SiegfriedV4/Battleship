@@ -8,6 +8,7 @@ import { createBoard } from './board/boardRenderer.js';
 import { handlePlayerPlacement, clearShips, placeShipsRandomly } from './ships/shipPlacement.js';
 import { startBattle, bindFiringBoardEvents } from './game/gameController.js';
 import { updateStats } from './stats/statsManager.js';
+import { initNotifications } from './ui/notificationManager.js';
 
 /**
  * Initialize game when page loads
@@ -35,6 +36,7 @@ function startGame() {
 
 // Start when DOM ready
 document.addEventListener('DOMContentLoaded', () => {
+    initNotifications(); // Initialize notification system
     startGame();
     initSocket(handleServerMessage);
 });
