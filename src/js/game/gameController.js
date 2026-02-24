@@ -33,6 +33,7 @@ export function startBattle() {
     });
 
     gameState.setShipsSentToServer(true);
+    saveGameState(); // Save state after sending ships
     showSuccess('Ships sent! Waiting for opponent...');
 }
 

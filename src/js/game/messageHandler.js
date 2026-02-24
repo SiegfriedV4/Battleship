@@ -116,6 +116,7 @@ function handleShotResult(message) {
 
         shotTile.classList.add(message.hit ? 'hit' : 'miss');
         updateStats();
+        saveGameState(); 
     }
 }
 
