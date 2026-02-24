@@ -118,7 +118,7 @@ function updateShipDropdown() {
         option.textContent = isPlaced 
             ? `${shipDef.type} (PLACED ✓)` 
             : `${capitalizeFirst(shipDef.type)} (${shipDef.length} tiles)`;
-        option.disabled = isPlaced;  // ⭐ Disable if placed
+        option.disabled = isPlaced;  // Disable if placed
         select.appendChild(option);
     });
 }

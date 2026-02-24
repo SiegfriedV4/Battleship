@@ -123,8 +123,34 @@ function handleShotResult(message) {
 function handleShotFired(message) {
     const playerTile = getTileFromCoordinate(message.coordinate, 'player-board');
     if (playerTile) {
+        // Add hit or miss marker
         playerTile.classList.add(message.hit ? 'hit' : 'miss');
+        
+        // Show notification
+        if (message.hit) {
+            showWarning(`💥 Opponent hit your ${getShipAtPosition(message.coordinate)}!`);
+        } else {
+            showSuccess('😅 Opponent missed!');
+        }
     }
+}
+
+// Get ship name at position
+function getShipAtPosition(coordinate) {
+    const {row, col} = parseCoordinate(coordinate);
+    const ships = gameState.getPlacedShips();
+    
+    for (let ship of ships) {
+        for (let i = 0; i < ship.length; i++) {
+            const shipRow = ship.orientation === 'H' ? ship.startRow : ship.startRow + i;
+            const shipCol = ship.orientation === 'H' ? ship.startCol + i : ship.startCol;
+            
+            if (shipRow === row && shipCol === col) {
+                return ship.type;
+            }
+        }
+    }
+    return 'unknown';
 }
 
 function handleGameOver(message) {
