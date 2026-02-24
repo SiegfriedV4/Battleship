@@ -110,13 +110,22 @@ function handleShotResult(message) {
     if (shotTile) {
         if (message.hit) {
             gameState.incrementHits();
+            
+            // ⭐ Check if ship was sunk
+            if (message.shipType) {
+                gameState.recordShipHit(message.shipType);
+                
+                if (gameState.isShipSunk(message.shipType)) {
+                    showSuccess(`🎯 You sunk their ${message.shipType.toUpperCase()}!`);
+                }
+            }
         } else {
             gameState.incrementMisses();
         }
 
         shotTile.classList.add(message.hit ? 'hit' : 'miss');
         updateStats();
-        saveGameState(); 
+        saveGameState();
     }
 }
 

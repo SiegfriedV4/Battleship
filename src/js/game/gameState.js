@@ -11,6 +11,20 @@ class GameState {
         this.placedShips = [];
         this.totalHits = 0;
         this.totalMisses = 0;
+        this.shipHits = {};
+    }
+    
+    recordShipHit(shipType) {
+        if (!this.shipHits[shipType]) {
+            this.shipHits[shipType] = 0;
+        }
+        this.shipHits[shipType]++;
+    }
+    
+    isShipSunk(shipType) {
+        const ship = this.placedShips.find(s => s.type === shipType);
+        if (!ship) return false;
+        return this.shipHits[shipType] >= ship.length;
     }
 
     // Reset state for new game
