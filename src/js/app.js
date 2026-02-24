@@ -64,19 +64,34 @@ function startGame() {
 document.addEventListener('DOMContentLoaded', () => {
     initNotifications();
     
-    // Check if user is already logged in
+    // Check for saved game first
+    if (hasGameInProgress()) {
+        const resume = confirm('Resume your previous game?');
+        if (resume) {
+            const savedState = loadGameState();
+            hideAuthScreen();
+            showGameScreen();  // Skip lobby, go straight to game
+            initNavigation();
+            restoreGameState(savedState);
+            initSocket(handleServerMessage);
+            return;
+        } else {
+            clearGameState();
+        }
+    }
+    
+    // Normal login flow...
     if (isLoggedIn() && shouldRemember()) {
         hideAuthScreen();
-        initLobby();  // ⭐ Show lobby, not game
+        initLobby();
         initSocket(handleServerMessage);
     } else {
         showLoginScreen();
         initSocket(handleServerMessage);
     }
     
-    // Listen for successful authentication
     window.addEventListener('auth-success', () => {
-        initLobby();  // ⭐ Show lobby after login
+        initLobby();
     });
 });
 
