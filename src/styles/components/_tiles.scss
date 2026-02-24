@@ -8,11 +8,51 @@
     background: #2a5080;
   }
 
-  &.carrier { background: #2c3e50; }
-  &.battleship { background: #34495e; }
-  &.cruiser { background: #475569; }
-  &.submarine { background: #546e7a; }
-  &.destroyer { background: #607d8b; }
+  // ⭐ Ship icons
+  &.carrier {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    
+    &::before {
+      content: '🚢';
+      font-size: 20px;
+    }
+  }
+  
+  &.battleship {
+    background: linear-gradient(135deg, #34495e, #4a5f7f);
+    
+    &::before {
+      content: '⛴️';
+      font-size: 20px;
+    }
+  }
+  
+  &.cruiser {
+    background: linear-gradient(135deg, #4a5f7f, #5a738e);
+    
+    &::before {
+      content: '🛳️';
+      font-size: 18px;
+    }
+  }
+  
+  &.submarine {
+    background: linear-gradient(135deg, #5a738e, #607d8b);
+    
+    &::before {
+      content: '🚤';
+      font-size: 18px;
+    }
+  }
+  
+  &.destroyer {
+    background: linear-gradient(135deg, #607d8b, #78909c);
+    
+    &::before {
+      content: '⛵';
+      font-size: 18px;
+    }
+  }
 
   &.hit,
   &.miss {
