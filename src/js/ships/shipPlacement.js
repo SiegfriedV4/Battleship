@@ -93,10 +93,36 @@ export function handlePlayerPlacement(event) {
     gameState.addShip(ship);
     placeShipOnBoard(document.getElementById('player-board'), ship);
     
+    updateShipDropdown(); // Disable placed ship in dropdown
+
     const remaining = SHIP_DEFINITIONS.length - gameState.getPlacedShips().length;
     if (remaining === 0) {
         showSuccess('All ships placed! Click "Fire" to start battle.');
     } else {
         showSuccess(`${shipType} placed! ${remaining} ship(s) remaining.`);
     }
+}
+
+// Update dropdown to show placed ships
+function updateShipDropdown() {
+    const select = document.getElementById('ship-select');
+    const placedShips = gameState.getPlacedShips();
+    
+    // Clear and rebuild options
+    select.innerHTML = '';
+    
+    SHIP_DEFINITIONS.forEach(shipDef => {
+        const isPlaced = placedShips.some(s => s.type === shipDef.type);
+        const option = document.createElement('option');
+        option.value = shipDef.type;
+        option.textContent = isPlaced 
+            ? `${shipDef.type} (PLACED ✓)` 
+            : `${capitalizeFirst(shipDef.type)} (${shipDef.length} tiles)`;
+        option.disabled = isPlaced;  // ⭐ Disable if placed
+        select.appendChild(option);
+    });
+}
+
+function capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }

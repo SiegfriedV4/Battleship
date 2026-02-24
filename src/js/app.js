@@ -26,6 +26,7 @@ function initLobby() {
     const playLocalBtn = document.getElementById('play-local-btn');
     playLocalBtn?.addEventListener('click', () => {
         startGame();
+        gameState.setGameId('local-' + Date.now()); // Unique ID for local game
     });
     
     initNavigation();
