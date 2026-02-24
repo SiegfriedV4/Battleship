@@ -39,7 +39,8 @@ export const STORAGE_KEYS = {
     USERNAME: 'username',
     MATCH_START_TIME: 'matchStartTime',
     MATCH_HISTORY: 'battleship_match_history',
-    REMEMBER_ME: 'rememberMe' 
+    REMEMBER_ME: 'rememberMe',
+    GAME_STATE: 'battleship_game_state' 
 };
 
 export const MESSAGE_TYPES = {
