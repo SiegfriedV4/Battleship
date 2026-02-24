@@ -11,6 +11,7 @@ import { updateStats } from '../stats/statsManager.js';
 import { saveMatchToHistory, setMatchStartTime, getMatchStartTime } from '../storage/matchHistory.js';
 import { resetLocalGameState } from './gameController.js';
 import { showTurnNotification, showGameOver, showSuccess } from '../ui/notificationManager.js';
+import { handleAuthSuccess, handleAuthError, handleKicked } from '../auth/authManager.js';
 
 /**
  * Main handler for all server messages
@@ -22,6 +23,14 @@ export function handleServerMessage(message) {
     switch (message.type) {
         case MESSAGE_TYPES.AUTH_SUCCESS:
             handleAuthSuccess(message);
+            break;
+            
+        case MESSAGE_TYPES.AUTH_ERROR:
+            handleAuthError(message);
+            break;
+
+        case MESSAGE_TYPES.KICKED:
+            handleKicked(message);
             break;
 
         case MESSAGE_TYPES.PLAYER_LIST:
@@ -58,18 +67,25 @@ export function handleServerMessage(message) {
             handleGameOver(message);
             break;
 
+        case MESSAGE_TYPES.LOGOUT_SUCCESS:
+            window.location.reload(); 
+            break;     
+
+        case MESSAGE_TYPES.ERROR:
+            handleServerError(message);
+            break;
+
         default:
             console.warn('Unknown message type:', message.type);
     }
 }
 
-/* ===== Individual message handlers ===== */
-
-function handleAuthSuccess(message) {
-    localStorage.setItem(STORAGE_KEYS.SESSION_TOKEN, message.sessionToken);
-    localStorage.setItem(STORAGE_KEYS.USERNAME, message.user.username);
-    sendToServer({ type: 'list_players' });
+function handleServerError(message) {
+    console.error(`Server error [${message.code}]: ${message.message}`);
+    alert(message.message);
 }
+
+/* ===== Individual message handlers ===== */
 
 function handleGameStart(message) {
     gameState.setOpponent(message.opponent);

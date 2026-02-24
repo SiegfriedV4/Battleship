@@ -1,5 +1,5 @@
 // ============================================
-// Main entry that initializes the game
+// Main entry that initializes the game with authentication
 // ============================================
 
 import { initSocket } from './websocket.js';
@@ -9,11 +9,37 @@ import { handlePlayerPlacement, clearShips, placeShipsRandomly } from './ships/s
 import { startBattle, bindFiringBoardEvents } from './game/gameController.js';
 import { updateStats } from './stats/statsManager.js';
 import { initNotifications } from './ui/notificationManager.js';
+import { isLoggedIn, shouldRemember } from './auth/authManager.js';
+import { showLoginScreen, hideAuthScreen } from './auth/authUI.js';
+import { initNavigation } from './ui/navigationUI.js';
+import { sendToServer } from './websocket.js';
 
 /**
- * Initialize game when page loads
+ * Initialize lobby after login
+ * WHY: User needs to see online players and send invites
+ */
+function initLobby() {
+    // Request list of online players
+    sendToServer({ type: 'list_players' });
+    
+    // Bind "Practice Locally" button
+    const playLocalBtn = document.getElementById('play-local-btn');
+    playLocalBtn?.addEventListener('click', () => {
+        startGame();
+    });
+    
+    initNavigation();
+}
+
+/**
+ * Initialize game when game starts (after invite accepted)
+ * WHY: Set up boards and controls for actual gameplay
  */
 function startGame() {
+    // Hide lobby, show game screen
+    document.getElementById('lobby-screen').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'block';
+    
     const playerBoard = document.getElementById('player-board');
     const firingBoard = document.getElementById('firing-board');
 
@@ -34,9 +60,25 @@ function startGame() {
     updateStats();
 }
 
-// Start when DOM ready
+// Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
-    initNotifications(); // Initialize notification system
-    startGame();
-    initSocket(handleServerMessage);
+    initNotifications();
+    
+    // Check if user is already logged in
+    if (isLoggedIn() && shouldRemember()) {
+        hideAuthScreen();
+        initLobby();  // ⭐ Show lobby, not game
+        initSocket(handleServerMessage);
+    } else {
+        showLoginScreen();
+        initSocket(handleServerMessage);
+    }
+    
+    // Listen for successful authentication
+    window.addEventListener('auth-success', () => {
+        initLobby();  // ⭐ Show lobby after login
+    });
 });
+
+// Export startGame so lobbyUI can call it
+export { startGame };

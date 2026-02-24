@@ -4,29 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Battleship Game</title>
-    <!-- Links import for font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-
-    <!-- <link rel="stylesheet" href="styles.css" /> -->
     <link rel="stylesheet" href="/src/styles/main.scss" />
 </head>
 <body>
-    <nav>
+    <!-- ============================================
+         AUTHENTICATION CONTAINER
+         Shown on page load, hidden after login
+         ============================================ -->
+    <div id="auth-container" class="auth-container">
+        <!-- Login/Register forms injected here -->
+    </div>
+
+    <!-- ============================================
+         NAVIGATION BAR
+         Hidden during auth, shown after login
+         ============================================ -->
+    <nav style="display: none;">
         <div class="nav-brand">⚓ Battleship</div>
         <div class="nav-links">
             <a href="index.html" class="active">Game</a>
             <a href="history.html">Match History</a>
+            <span id="username-display"></span>
+            <a href="#" id="logout-btn">Logout</a>
         </div>
     </nav>
-    <div id="lobby-screen">
-        <h2>Online Players</h2>
-        <div id="online-players"></div>
-    </div>   
-    <div id="game-screen">
+
+    <!-- ============================================
+         LOBBY SCREEN
+         Show online players, send invites
+         ============================================ -->
+    <div id="lobby-screen" style="display: none;">
         <main>
-            <h1>Battleship Game</h1>
+            <h1>🎮 Multiplayer Lobby</h1>
+            <p class="lobby-subtitle">Select a player to challenge</p>
+            
+            <div id="online-players" class="online-players">
+                <!-- Player list injected by lobbyUI.js -->
+            </div>
+            
+            <div class="lobby-actions">
+                <button id="play-local-btn" class="btn-secondary">
+                    🎯 Practice Locally
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- ============================================
+         GAME SCREEN
+         Ship placement and battle
+         ============================================ -->
+    <div id="game-screen" style="display: none;">
+        <main>
+            <h1>⚓ Battleship Game</h1>
 
             <div class="ship-controls">
                 <div class="control-group">
@@ -48,9 +81,7 @@
                 </div>
                 <button id="clear-ships">Clear All Ships</button>
                 <button id="random-ships">Random Placement</button>
-                <!--<button id="start-game">Start Game</button> -->
-                <button id="fire-random">Fire</button>       
-                <button id="restart-game">Restart Game</button>
+                <button id="fire-random">Start Battle</button>       
             </div>
 
             <div class="boards">
@@ -58,78 +89,34 @@
                     <h2>Your Fleet</h2>
                     <div class="board-wrapper">
                         <div class="column-labels">
-                            <div>A</div>
-                            <div>B</div>
-                            <div>C</div>
-                            <div>D</div>
-                            <div>E</div>
-                            <div>F</div>
-                            <div>G</div>
-                            <div>H</div>
-                            <div>I</div>
-                            <div>J</div>
-                            <div>K</div>
-                            <div>L</div>
+                            <div>A</div><div>B</div><div>C</div><div>D</div>
+                            <div>E</div><div>F</div><div>G</div><div>H</div>
+                            <div>I</div><div>J</div><div>K</div><div>L</div>
                         </div>
                         <div class="board-with-rows">
                             <div class="row-labels">
-                                <div>1</div>
-                                <div>2</div>
-                                <div>3</div>
-                                <div>4</div>
-                                <div>5</div>
-                                <div>6</div>
-                                <div>7</div>
-                                <div>8</div>
-                                <div>9</div>
-                                <div>10</div>
-                                <div>11</div>
-                                <div>12</div>
+                                <div>1</div><div>2</div><div>3</div><div>4</div>
+                                <div>5</div><div>6</div><div>7</div><div>8</div>
+                                <div>9</div><div>10</div><div>11</div><div>12</div>
                             </div>
-
                             <div id="player-board" class="board"></div>
                         </div>
                     </div>
-                    <!--<div class="legend">
-                        <div><span class="color carrier"></span> Carrier (5)</div>
-                        <div><span class="color battleship"></span> Battleship (4)</div>
-                        <div><span class="color cruiser"></span> Cruiser (3)</div>
-                        <div><span class="color submarine"></span> Submarine (3)</div>
-                        <div><span class="color destroyer"></span> Destroyer (2)</div> 
-                    </div> -->
                 </div>
 
                 <div class="board-container">
                     <h2>Target Grid</h2>
                     <div class="board-wrapper">
                         <div class="column-labels">
-                            <div>A</div>
-                            <div>B</div>
-                            <div>C</div>
-                            <div>D</div>
-                            <div>E</div>
-                            <div>F</div>
-                            <div>G</div>
-                            <div>H</div>
-                            <div>I</div>
-                            <div>J</div>
-                            <div>K</div>
-                            <div>L</div>
+                            <div>A</div><div>B</div><div>C</div><div>D</div>
+                            <div>E</div><div>F</div><div>G</div><div>H</div>
+                            <div>I</div><div>J</div><div>K</div><div>L</div>
                         </div>
                         <div class="board-with-rows">
                             <div class="row-labels">
-                                <div>1</div>
-                                <div>2</div>
-                                <div>3</div>
-                                <div>4</div>
-                                <div>5</div>
-                                <div>6</div>
-                                <div>7</div>
-                                <div>8</div>
-                                <div>9</div>
-                                <div>10</div>
-                                <div>11</div>
-                                <div>12</div>
+                                <div>1</div><div>2</div><div>3</div><div>4</div>
+                                <div>5</div><div>6</div><div>7</div><div>8</div>
+                                <div>9</div><div>10</div><div>11</div><div>12</div>
                             </div>
                             <div id="firing-board" class="board disabled"></div>
                         </div>
@@ -143,7 +130,7 @@
             </div>
         </main>
     </div>
+
     <script type="module" src="/src/js/app.js"></script>
-    
 </body>
 </html>

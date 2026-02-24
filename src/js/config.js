@@ -51,6 +51,7 @@ export const MESSAGE_TYPES = {
     AUTH_ERROR: 'auth_error',
     KICKED: 'kicked',
     LOGOUT_SUCCESS: 'logout_success',
+    ERROR: 'error',
 
     // Game messages
     PLAYER_LIST: 'player_list',

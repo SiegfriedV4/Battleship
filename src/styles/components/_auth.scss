@@ -1,0 +1,149 @@
+
+// Auth container (full screen overlay)
+.auth-container {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+// Auth card (centered box)
+.auth-card {
+  width: 400px;
+  max-width: 90%;
+  padding: 40px;
+  background: rgba(22, 33, 62, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  
+  h1 {
+    text-align: center;
+    color: #00d4ff;
+    margin-bottom: 10px;
+    font-size: 2.5rem;
+  }
+  
+  .auth-subtitle {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 30px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: rgba(10, 14, 39, 0.8);
+    border: 2px solid #0f3460;
+    border-radius: 8px;
+    color: #eee;
+    font-size: 14px;
+    
+    &:focus {
+      outline: none;
+      border-color: #00d4ff;
+    }
+  }
+  
+  button {
+    width: 100%;
+    padding: 12px;
+    background: #00d4ff;
+    color: #1a1a2e;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    
+    &:hover {
+      background: #00b8e6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
+    }
+  }
+  
+  .auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    color: #aaa;
+    
+    a {
+      color: #00d4ff;
+      text-decoration: none;
+      font-weight: bold;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Password requirements list
+.password-requirements {
+  background: rgba(10, 14, 39, 0.6);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 13px;
+  
+  p {
+    margin-bottom: 8px;
+    color: #00d4ff;
+  }
+  
+  ul {
+    list-style: none;
+    padding-left: 0;
+    
+    li {
+      padding: 4px 0;
+      color: #aaa;
+      
+      &:before {
+        content: '• ';
+        color: #00d4ff;
+      }
+    }
+  }
+}
+
+// Password strength indicator
+.password-field {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.password-strength {
+  height: 4px;
+  background: #27ae60;
+  border-radius: 2px;
+  margin-top: 5px;
+  transition: all 0.3s;
+  font-size: 11px;
+  text-align: right;
+  padding-right: 5px;
+  display: none;
+}
+
+// Remember me checkbox
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  color: #aaa;
+  cursor: pointer;
+  
+  input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+  }
+}
